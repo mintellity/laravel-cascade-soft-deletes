@@ -27,7 +27,7 @@ trait CascadeRestores
         static::restored(function (self $model) {
             $model->performCascadeRestore();
             unset($model->deletedAt);
-            Log::debug('Restored model: ' . get_class($model) . ' with id: ' . $model->getKey());
+            Log::debug('Restored model: '.get_class($model).' with id: '.$model->getKey());
 
         });
     }
@@ -37,12 +37,13 @@ trait CascadeRestores
      */
     protected function cascadeRestores(): Collection
     {
-        if (property_exists($this, 'cascadeRestores'))
+        if (property_exists($this, 'cascadeRestores')) {
             return collect($this->cascadeRestores);
-        elseif (property_exists($this, 'cascadeDeletes'))
+        } elseif (property_exists($this, 'cascadeDeletes')) {
             return collect($this->cascadeDeletes);
-        else
+        } else {
             return collect();
+        }
     }
 
     /**
@@ -54,7 +55,7 @@ trait CascadeRestores
 
         $relations->each(function (string $relation) {
             $relatedClass = $this->{$relation}()->getRelated();
-            $relatedDeletedAtColumn = defined($relatedClass . '::DELETED_AT') ? $relatedClass::DELETED_AT : 'deleted_at';
+            $relatedDeletedAtColumn = defined($relatedClass.'::DELETED_AT') ? $relatedClass::DELETED_AT : 'deleted_at';
 
             // We need to query each model to also dispatch restoring events for them
             $this->{$relation}()->onlyTrashed()->where($relatedDeletedAtColumn, '>=', $this->deletedAt)->chunk($this->DELETE_CHUNK_SIZE, function (Collection $models) {

@@ -21,7 +21,7 @@ trait CascadeSoftDeletes
     {
         static::softDeleted(function (self $model) {
             $model->performCascadeDelete();
-            Log::debug('Deleted model: ' . get_class($model) . ' with id: ' . $model->getKey());
+            Log::debug('Deleted model: '.get_class($model).' with id: '.$model->getKey());
         });
     }
 
@@ -30,10 +30,11 @@ trait CascadeSoftDeletes
      */
     protected function cascadeDeletes(): Collection
     {
-        if (property_exists($this, 'cascadeDeletes'))
+        if (property_exists($this, 'cascadeDeletes')) {
             return collect($this->cascadeDeletes);
-        else
+        } else {
             return collect();
+        }
     }
 
     /**
