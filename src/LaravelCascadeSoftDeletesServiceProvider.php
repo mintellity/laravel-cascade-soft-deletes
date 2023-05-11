@@ -15,7 +15,6 @@ class LaravelCascadeSoftDeletesServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
-            ->name('laravel-cascade-soft-deletes')
-            ->hasConfigFile();
+            ->name('laravel-cascade-soft-deletes');
     }
 }
