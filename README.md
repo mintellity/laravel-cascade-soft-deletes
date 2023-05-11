@@ -1,78 +1,67 @@
 # Cascade Soft Deletes for relations in your Laravel models.
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/mintellity/laravel-cascade-soft-deletes.svg?style=flat-square)](https://packagist.org/packages/mintellity/laravel-cascade-soft-deletes)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/mintellity/laravel-cascade-soft-deletes/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/mintellity/laravel-cascade-soft-deletes/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/mintellity/laravel-cascade-soft-deletes/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/mintellity/laravel-cascade-soft-deletes/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/mintellity/laravel-cascade-soft-deletes.svg?style=flat-square)](https://packagist.org/packages/mintellity/laravel-cascade-soft-deletes)
+Automatically soft delete related models when the parent model is soft deleted and restore them when the parent model is restored.
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/Laravel Cascade Soft Deletes.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/Laravel Cascade Soft Deletes)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+> :warning: **Restoring is experimental.** Only models whose deleted_at timestamp is greater than the parent model's deleted_at timestamp will be restored. This means that if you restore a parent model, all related models that were deleted before the parent model will not be restored.
 
 ## Installation
 
+Add this repository to your `composer.json` file:
+```json
+{
+  "repositories": [
+    {
+      "type": "github",
+      "url": "https://github.com/mintellity/laravel-tabbed-sessions.git"
+    }
+  ]
+}
+
+```
 You can install the package via composer:
 
 ```bash
 composer require mintellity/laravel-cascade-soft-deletes
 ```
 
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="laravel-cascade-soft-deletes-migrations"
-php artisan migrate
-```
-
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="laravel-cascade-soft-deletes-config"
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="laravel-cascade-soft-deletes-views"
-```
-
 ## Usage
 
+Add the `Mintellity\LaravelCascadeSoftDeletes\Traits\CascadeSoftDeletes` trait to your model. You can remove the `Illuminate\Database\Eloquent\SoftDeletes` trait if you want to. Add each relation you want to cascade soft delete, to the `cascadeDeletes` array in your Model.
+
 ```php
-$laravelCascadeSoftDeletes = new Mintellity\LaravelCascadeSoftDeletes();
-echo $laravelCascadeSoftDeletes->echoPhrase('Hello, Mintellity!');
+class User extends Model
+{
+    use CascadeSoftDeletes;
+    
+    protected array $cascadeDeletes = ['orders'];
+    
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+}
 ```
 
-## Testing
+To also cascade restore, also add the `Mintellity\LaravelCascadeSoftDeletes\Traits\CascadeRestores` trait to your model. By default the `cascadeRestores` array will be the same as the `cascadeDeletes` array. If you want to restore other relations, you can add them to the `cascadeRestores` array.
 
-```bash
-composer test
+```php
+class User extends Model
+{
+    use CascadeSoftDeletes,
+        CascadeRestores;
+    
+    protected array $cascadeDeletes = ['orders'];
+    
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+}
 ```
 
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-## Security Vulnerabilities
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
 
 ## Credits
 
