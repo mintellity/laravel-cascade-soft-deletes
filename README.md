@@ -12,7 +12,7 @@ Add this repository to your `composer.json` file:
   "repositories": [
     {
       "type": "github",
-      "url": "https://github.com/mintellity/laravel-tabbed-sessions.git"
+      "url": "https://github.com/mintellity/laravel-cascade-soft-deletes.git"
     }
   ]
 }
