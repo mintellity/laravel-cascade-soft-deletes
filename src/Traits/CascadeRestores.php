@@ -18,7 +18,7 @@ trait CascadeRestores
     /**
      * Register event listener for delete and restore events on the model.
      */
-    protected static function bootCascadeRestore(): void
+    protected static function bootCascadeRestores(): void
     {
         static::restoring(function (self $model) {
             $model->deletedAt = $model->deleted_at;
