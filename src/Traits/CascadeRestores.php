@@ -3,13 +3,13 @@
 namespace Mintellity\LaravelCascadeSoftDeletes\Traits;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Mintellity\LaravelCascadeSoftDeletes\LaravelCascadeSoftDeletes;
 
 trait CascadeRestores
 {
-    use CascadeSoftDeletes;
+    use SoftDeletes;
 
     protected int $DELETE_CHUNK_SIZE = 50;
 
@@ -27,7 +27,6 @@ trait CascadeRestores
         static::restored(function (self $model) {
             $model->performCascadeRestore();
             unset($model->deletedAt);
-            Log::debug('Restored model: '.get_class($model).' with id: '.$model->getKey());
 
         });
     }
@@ -47,7 +46,7 @@ trait CascadeRestores
     }
 
     /**
-     * Restore the related models
+     * Cascade restore the related models
      */
     protected function performCascadeRestore(): void
     {

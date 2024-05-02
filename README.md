@@ -2,7 +2,7 @@
 
 Automatically soft delete related models when the parent model is soft deleted and restore them when the parent model is restored.
 
-> :warning: **Restoring is experimental.** Only models whose deleted_at timestamp is greater than the parent model's deleted_at timestamp will be restored. This means that if you restore a parent model, all related models that were deleted before the parent model will not be restored.
+> :warning: **Restoring is experimental.** All models whose deleted_at timestamp is greater than the parent model's deleted_at timestamp will be restored.
 
 ## Installation
 
@@ -32,6 +32,23 @@ Add the `Mintellity\LaravelCascadeSoftDeletes\Traits\CascadeSoftDeletes` trait t
 class User extends Model
 {
     use CascadeSoftDeletes;
+    
+    protected array $cascadeDeletes = ['orders'];
+    
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+}
+```
+
+To also cascade force deletes and the deleted event, also add the `Mintellity\LaravelCascadeSoftDeletes\Traits\CascadeForceDeletes` trait to your model.
+
+```php
+class User extends Model
+{
+    use CascadeSoftDeletes,
+        CascadeForceDeletes;
     
     protected array $cascadeDeletes = ['orders'];
     

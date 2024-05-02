@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Mintellity\LaravelCascadeSoftDeletes\LaravelCascadeSoftDeletes;
 
-trait CascadeSoftDeletes
+trait CascadeForceDeletes
 {
     use SoftDeletes;
 
@@ -18,7 +18,7 @@ trait CascadeSoftDeletes
      */
     protected static function bootCascadeSoftDeletes(): void
     {
-        static::softDeleted(function (self $model) {
+        static::forceDeleted(function (self $model) {
             $model->performCascadeSoftDelete();
         });
     }
@@ -38,7 +38,7 @@ trait CascadeSoftDeletes
     /**
      * Cascade delete the related models
      */
-    protected function performCascadeSoftDelete(): void
+    protected function performCascadeForceDelete(): void
     {
         $relations = LaravelCascadeSoftDeletes::getCascadingRelations($this, $this->cascadeDeletes());
 
@@ -46,7 +46,7 @@ trait CascadeSoftDeletes
             // We need to query each model to also dispatch trashed events for them
             $this->{$relation}()->chunk($this->DELETE_CHUNK_SIZE, function (Collection $models) {
                 $models->each(function (Model $model) {
-                    $model->delete();
+                    $model->forceDelete();
                 });
             });
         });
