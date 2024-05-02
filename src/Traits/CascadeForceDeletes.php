@@ -18,8 +18,8 @@ trait CascadeForceDeletes
      */
     protected static function bootCascadeForceDeletes(): void
     {
-        static::deleted(function (self $model) {
-            $model->performCascadeSoftDelete();
+        static::forceDeleting(function (self $model) {
+            $model->performCascadeForceDelete();
         });
     }
 
