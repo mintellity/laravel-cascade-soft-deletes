@@ -16,9 +16,9 @@ trait CascadeForceDeletes
     /**
      * Register event listener for delete and restore events on the model.
      */
-    protected static function bootCascadeSoftDeletes(): void
+    protected static function bootCascadeForceDeletes(): void
     {
-        static::forceDeleted(function (self $model) {
+        static::deleted(function (self $model) {
             $model->performCascadeSoftDelete();
         });
     }
