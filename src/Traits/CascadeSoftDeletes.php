@@ -26,7 +26,7 @@ trait CascadeSoftDeletes
     /**
      * Get the cascadeDeletes property or an empty collection.
      */
-    protected function cascadeDeletes(): Collection
+    protected function cascadeSoftDeletes(): Collection
     {
         if (property_exists($this, 'cascadeDeletes')) {
             return collect($this->cascadeDeletes);
@@ -40,7 +40,7 @@ trait CascadeSoftDeletes
      */
     protected function performCascadeSoftDelete(): void
     {
-        $relations = LaravelCascadeSoftDeletes::getCascadingRelations($this, $this->cascadeDeletes());
+        $relations = LaravelCascadeSoftDeletes::getCascadingRelations($this, $this->cascadeSoftDeletes());
 
         $relations->each(function (string $relation) {
             // We need to query each model to also dispatch trashed events for them
